@@ -13,7 +13,7 @@
 import UserDialog from "@/components/system/user/UserDialog.vue"
 import { addUser } from "@/api/user";
 import { ElMessage } from "element-plus";
-// import { getRoleList } from "@/api/role";
+import { getRoleList } from "@/api/role";
 
 export default {
   name: "AddUserComponent",
@@ -49,9 +49,7 @@ export default {
           //账号状态（0正常 1停用）
           status: "0",
           //用户所关联的角色id列表（请求用）
-          roleIds: [],
-          //封禁结束时间
-          banEndTime: null
+          roleIds: []
         }
       },
       //对话框是否在加载
@@ -71,13 +69,13 @@ export default {
       this.isDisableForm = false;
       //对话框显示加载动画
       this.dialogLoading = true;
-      // getRoleList().then((response) => {
-      //   if(response != null) {
-      //     this.addUserData.roles = response.data;
-      //     //取消加载动画
-      //     this.dialogLoading = false;
-      //   }
-      // });
+      getRoleList().then((response) => {
+        if(response != null) {
+          this.addUserData.roles = response.data;
+          //取消加载动画
+          this.dialogLoading = false;
+        }
+      });
     },
     /**
      * 添加用户

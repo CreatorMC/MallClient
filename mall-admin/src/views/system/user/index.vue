@@ -42,6 +42,11 @@
       </el-table-column>
       <el-table-column prop="email" label="邮箱" />
       <el-table-column prop="phonenumber" label="手机号码" />
+      <el-table-column prop="balance" label="余额">
+        <template #default="scope">
+          {{ parseBalance(scope.row.balance) }}元
+        </template>
+      </el-table-column>
       <el-table-column prop="type" label="用户类型">
         <template #default="scope">
           {{ scope.row.type == "0" ? "普通用户" : "管理员" }}
@@ -85,6 +90,7 @@
 
 <script>
 import { getPageUserList, changeUserStatus, deleteUser } from "@/api/user"
+import { parseBalance } from "@/utils/util"
 import { ElMessage, ElMessageBox } from "element-plus"
 import EditUserComponent from "@/components/system/user/EditUserComponent.vue"
 import AddUserComponent from "@/components/system/user/AddUserComponent.vue"
@@ -118,6 +124,8 @@ export default {
         //   phonenumber: "",
         //   //账号状态（0正常 1停用）
         //   status: "0",
+        //   //用户余额（单位为分，不用浮点数，防止出现浮点数精度问题）
+        //   balance: "0"
         //   //创建时间
         //   createTime: ""
         // }
@@ -237,6 +245,12 @@ export default {
       } else {
         this.isDisableDelete = true;
       }
+    },
+    /**
+     * 解析余额
+     */
+    parseBalance(balance) {
+      return parseBalance(balance);
     }
   },
   mounted() {
