@@ -13,7 +13,7 @@
  */
 export function parseBalance(balance) {
   if(balance == null || balance == "") {
-    return "0";
+    return "无";
   }
   let numStr = balance;
   if(Number.isInteger(balance)) {
