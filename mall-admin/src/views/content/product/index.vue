@@ -6,8 +6,7 @@
       </el-form-item>
       <el-form-item label="分类">
         <el-select v-model="form.categoryId" placeholder="分类" clearable>
-          <el-option label="电子" value=1 />
-          <el-option label="服装" value=2 />
+          <el-option v-for="item in categoryData" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -77,6 +76,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus';
 import PaginationComponent from '@/components/utils/PaginationComponent.vue';
 import { getProductList, deleteProduct } from '@/api/product';
+import { getAllCategory } from '@/api/category';
 import { parseBalance } from '@/utils/util';
 // import AddProductComponent from '@/components/content/product/AddProductComponent.vue';
 // import EditProductComponent from '@/components/content/product/EditProductComponent.vue';
@@ -100,6 +100,8 @@ export default {
       total: 0,
       //表格数据
       tableData: [],
+      //分类数据
+      categoryData: [],
       //是否禁用最上方的删除按钮
       isDisableDelete: true
     };
@@ -115,6 +117,16 @@ export default {
           this.tableData = response.data.rows;
           this.total = parseInt(response.data.total);
           this.tableLoading = false;
+        }
+      });
+    },
+    /**
+     * 获取分类列表
+     */
+    getCategoryData() {
+      getAllCategory().then((response) => {
+        if(response != null) {
+          this.categoryData = response.data;
         }
       });
     },
@@ -186,6 +198,7 @@ export default {
   },
   mounted() {
     this.getTableData();
+    this.getCategoryData();
   },
   components: { PaginationComponent }
 }

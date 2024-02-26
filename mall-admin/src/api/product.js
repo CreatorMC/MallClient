@@ -22,8 +22,21 @@ export function getProductList(pageNum, pageSize, dto) {
 }
 
 /**
- * 删除分类
- * @param {*} ids 分类id列表
+ * 添加商品
+ * @param {*} data 
+ * @returns 
+ */
+export function addProduct(data) {
+  return service.post("/content/product", data, {
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
+ * 删除商品
+ * @param {*} ids 商品id列表
  * @returns 
  */
 export function deleteProduct(ids) {
