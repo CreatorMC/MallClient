@@ -17,7 +17,7 @@
       </el-form-item>
     </el-form>
     <div>
-      <el-button type="primary" plain @click="openAddProductDialog">
+      <el-button type="primary" plain @click="$router.push('/index/content/edit')">
         <el-icon><Plus /></el-icon>
         <span>新增</span>
       </el-button>
@@ -65,10 +65,6 @@
       :total="total"
       @get-table-data="getTableData"
     />
-    <!-- 编辑商品组件 -->
-    <!-- <EditProductComponent ref="editDialog" @get-table-data="getTableData" /> -->
-    <!-- 新增商品组件 -->
-    <!-- <AddProductComponent ref="addDialog" @get-table-data="getTableData" /> -->
   </div>
 </template>
 
@@ -78,8 +74,6 @@ import PaginationComponent from '@/components/utils/PaginationComponent.vue';
 import { getProductList, deleteProduct } from '@/api/product';
 import { getAllCategory } from '@/api/category';
 import { parseBalance } from '@/utils/util';
-// import AddProductComponent from '@/components/content/product/AddProductComponent.vue';
-// import EditProductComponent from '@/components/content/product/EditProductComponent.vue';
 
 export default {
   data() {
@@ -131,16 +125,10 @@ export default {
       });
     },
     /**
-     * 打开新增商品对话框
-     */
-    openAddProductDialog() {
-      this.$refs['addDialog'].openAddProductDialog();
-    },
-    /**
-     * 打开编辑商品对话框
+     * 打开编辑商品界面
      */
     openEditProductDialog(data) {
-      this.$refs['editDialog'].openEditProductDialog(data);
+      this.$router.push("/index/content/edit/" + data.id);
     },
     /**
      * 删除商品

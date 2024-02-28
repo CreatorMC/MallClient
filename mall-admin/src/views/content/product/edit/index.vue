@@ -90,9 +90,9 @@
 <script>
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getAllCategory } from "@/api/category"
-import router from "../../../../router";
+import router from "@/router";
 import { addProductImage } from "@/api/product_image";
-import { addProduct } from "@/api/product";
+import { addProduct, getProduct, updateProduct } from "@/api/product";
 export default {
   data() {
     return {
@@ -199,6 +199,31 @@ export default {
   },
   methods: {
     /**
+     * 提交之前对表单的处理
+     */
+    submitBefore(that) {
+      let form = that.form;
+      form.originalPrice = that.form.originalPrice;
+      form.promotePrice = that.form.promotePrice;
+      form.productImageList = [];
+      form.productDetailImageList = [];
+      //校验成功
+      if(form.originalPrice != null) {
+        form.originalPrice = parseInt(form.originalPrice * 100);
+      }
+      if(form.promotePrice != null) {
+        form.promotePrice = parseInt(form.promotePrice * 100);
+      }
+      for(let i in that.fileProductImageList) {
+        form.productImageList.push(that.fileProductImageList[i].customRealURL);
+      }
+      for(let i in that.fileProductDetailImageList) {
+        form.productDetailImageList.push(that.fileProductDetailImageList[i].customRealURL);
+      }
+      //返回处理完成的 form
+      return form;
+    },
+    /**
      * 提交表单
      */
     submitForm() {
@@ -206,22 +231,7 @@ export default {
       //表单校验
       this.$refs['form'].validate((valid, fields) => {
         if(valid) {
-          let form = that.form;
-          form.originalPrice = that.form.originalPrice;
-          form.promotePrice = that.form.promotePrice;
-          //校验成功
-          if(form.originalPrice != null) {
-            form.originalPrice = parseInt(form.originalPrice * 100);
-          }
-          if(form.promotePrice != null) {
-            form.promotePrice = parseInt(form.promotePrice * 100);
-          }
-          for(let i in that.fileProductImageList) {
-            form.productImageList.push(that.fileProductImageList[i].customRealURL);
-          }
-          for(let i in that.fileProductDetailImageList) {
-            form.productDetailImageList.push(that.fileProductDetailImageList[i].customRealURL);
-          }
+          let form = that.submitBefore(that);
           addProduct(form).then((response) => {
             if(response != null) {
               //添加商品成功
@@ -229,6 +239,28 @@ export default {
               //重置表单
               that.$refs['form'].resetFields();
               //进行路由跳转
+              router.push("/index/content/product");
+            }
+          });
+        }
+      });
+    },
+    /**
+     * 更新商品
+     */
+    saveEdit() {
+      const that = this;
+      //表单校验
+      this.$refs['form'].validate((valid, fields) => {
+        if(valid) {
+          let form = that.submitBefore(that);
+          updateProduct(form).then((response) => {
+            if(response != null) {
+              //添加商品成功
+              ElMessage.success("更新成功");
+              //重置表单
+              that.$refs['form'].resetFields();
+              //路由跳转
               router.push("/index/content/product");
             }
           });
@@ -310,25 +342,6 @@ export default {
       });
       return false;
     },
-    /**
-     * 更新商品
-     */
-    saveEdit(status) {
-      // const that = this;
-      // //表单校验
-      // this.$refs['form'].validate((valid, fields) => {
-      //   if(valid) {
-      //     updateArticle(that.form).then((response) => {
-      //       //添加商品成功
-      //       ElMessage.success("更新成功");
-      //       //重置表单
-      //       that.$refs['form'].resetFields();
-      //       // TODO 路由跳转
-      //       router.push("/index/content/article");
-      //     });
-      //   }
-      // });
-    },
     handlePictureCardPreview(uploadFile) {
       this.dialogImageUrl = uploadFile.url;
       this.dialogVisible = true;
@@ -346,21 +359,45 @@ export default {
     //从商品管理界面点击编辑按钮后
     if(this.$route.params.id[0]) {
       this.isEdit = true;
-      getArticle(this.$route.params.id[0]).then((response) => {
+      getProduct(this.$route.params.id[0]).then((response) => {
         if(response != null) {
           this.form = response.data;
-          // if(this.form.thumbnail != null && this.form.thumbnail != "") {
-          //   //有缩略图，创建一个假的缩略图文件对象，以在界面上显示
-          //   this.fileProductImageList.push(
-          //     {
-          //       name: "缩略图",
-          //       percentage: 0,
-          //       raw: new File([], "缩略图", null),
-          //       url: this.form.thumbnail,
-          //       status: "success"
-          //     }
-          //   );
-          // }
+          if(this.form.originalPrice != null) {
+            this.form.originalPrice = this.form.originalPrice / 100.0;
+          }
+          if(this.form.promotePrice != null) {
+            this.form.promotePrice = this.form.promotePrice / 100.0;
+          }
+          if(this.form.productImageList != null) {
+            //有商品轮播图，创建假的文件对象，以在界面上显示
+            for(let i in this.form.productImageList) {
+              this.fileProductImageList.push(
+                {
+                  name: "商品轮播图" + i,
+                  percentage: 0,
+                  raw: new File([], "商品轮播图" + i, null),
+                  url: this.form.productImageList[i],
+                  status: "success",
+                  customRealURL: this.form.productImageList[i]
+                }
+              );
+            }
+          }
+          if(this.form.productDetailImageList != null) {
+            //有商品详情图，创建假的文件对象，以在界面上显示
+            for(let i in this.form.productDetailImageList) {
+              this.fileProductDetailImageList.push(
+                {
+                  name: "商品详情图" + i,
+                  percentage: 0,
+                  raw: new File([], "商品详情图" + i, null),
+                  url: this.form.productDetailImageList[i],
+                  status: "success",
+                  customRealURL: this.form.productDetailImageList[i]
+                }
+              );
+            }
+          }
         }
       });
     }

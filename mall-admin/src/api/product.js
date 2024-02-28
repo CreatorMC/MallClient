@@ -35,6 +35,32 @@ export function addProduct(data) {
 }
 
 /**
+ * 更新商品
+ * @param {*} data 
+ * @returns 
+ */
+export function updateProduct(data) {
+  return service.put("/content/product", data, {
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
+ * 查询单个商品
+ * @param {*} id 商品 id
+ * @returns 
+ */
+export function getProduct(id) {
+  return service.get("/content/product/" + id, {
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
  * 删除商品
  * @param {*} ids 商品id列表
  * @returns 
