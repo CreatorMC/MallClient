@@ -126,7 +126,6 @@ export default {
         }
       ],
       isLoadingCategory: true,
-      isLoadingTag: true,
       //表单验证规则
       rules: {
         name: [
