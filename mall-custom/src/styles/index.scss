@@ -1,0 +1,61 @@
+@import './element-plus.scss';
+@import './variables.scss';
+@import './transition.scss';
+@import './markdown.scss';
+
+//主要内容样式
+.main-container {
+  max-width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100vh;
+}
+
+@media screen and (max-width: 800px) {
+  .main-container {
+    max-width: 95vw !important;
+  }
+}
+
+// 顶部占位样式
+.seat {
+  height: calc($headHeight + 20px);
+}
+
+//代码中语言标签样式
+.mark-down-code-language {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  font-weight: bold;
+  color: var(--el-color-info-light-5);
+  background-color: #263445;
+  padding: 0.5em;
+}
+
+//复制代码按钮样式
+.hljs ~ .mark-down-code-copy {
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  top: 0px;
+  cursor: pointer;
+  margin: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: none;
+}
+
+//经过代码区域时才显示
+.hljs:hover ~ .mark-down-code-copy,
+.hljs ~ .mark-down-code-copy:hover {
+  display: unset;
+}
+
+.hljs ~ .mark-down-code-copy:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+//点击文章目录时，标题文字与页面顶部的距离
+.creatormc-article-markdown-title {
+  scroll-margin-top: calc($headHeight + 20px);
+}
