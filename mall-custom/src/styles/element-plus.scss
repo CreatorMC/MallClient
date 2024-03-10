@@ -5,14 +5,11 @@
   border: 0px !important;
   background-color: unset !important;
   ul {
-    background-color: $headSubMenuBgColor !important;
     li {
-      color: white !important;
-      background-color: unset !important;
+      font-size: 12px;
     }
     li:hover {
-      color: var(--el-menu-active-color) !important;
-      background-color: $headSubMenuBgColor !important;
+      color: red !important;
     }
   }
 }
@@ -31,4 +28,8 @@
 
 .el-card {
   background-color: rgba(255, 255, 255, 0.85);
+}
+
+.el-menu--popup {
+  min-width: 100px !important;
 }

@@ -30,9 +30,9 @@ export default {
 <!-- 全局样式 -->
 <style lang="scss">
 body {
-  min-width: 100vw !important;
+  min-width: 100% !important;
   margin: 0;
   overflow-x: hidden;
-  background-color: #efefef;
+  background-color: #e1e7e9;
 }
 </style>
