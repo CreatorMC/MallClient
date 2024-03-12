@@ -10,9 +10,9 @@
       <el-footer class="footer">
         <div>
           <p>
-            <router-link to="/index/link">友情链接</router-link>
+            <a href="https://www.12315.cn">全国12315平台</a>
             <router-link to="/index/protocol">网站协议</router-link>
-            <router-link to="/index/about">关于我</router-link>
+            <router-link to="/index/about">关于我们</router-link>
           </p>
           <div>
             <a href="https://beian.miit.gov.cn/" target="_blank">鲁ICP备xxxxxxxxxx号</a>
