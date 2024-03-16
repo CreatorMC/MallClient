@@ -26,60 +26,70 @@
         </div>
       </el-main>
       <el-main class="body">
-        <div class="category-container space">
-          <h2>分类</h2>
-          <ul>
-            <el-scrollbar height="328px">
-              <li>女装</li>
-              <li>女装</li>
-              <li>女装</li>
-              <li>女装</li>
-              <li>女装</li>
-              <li>女装</li>
-              <li>女装</li>
-              <li>女装</li>
-            </el-scrollbar>
-          </ul>
+        <div style="display: flex; flex: 1;">
+          <div class="category-container space">
+            <h2>分类</h2>
+            <ul>
+              <el-scrollbar height="328px">
+                <li>女装</li>
+                <li>女装</li>
+                <li>女装</li>
+                <li>女装</li>
+                <li>女装</li>
+                <li>女装</li>
+                <li>女装</li>
+                <li>女装</li>
+              </el-scrollbar>
+            </ul>
+          </div>
+          <div class="banner-container space">
+            <div class="banner">
+              <el-carousel trigger="click" height="315px">
+                <el-carousel-item v-for="item in banners" :key="item">
+                  <img style="width: 100%; height: 100%;" :src=item>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <div class="notice">
+              <p><el-tag type="danger">规则</el-tag><span>2024年1月淘金重要新规速递</span></p>
+            </div>
+          </div>
+          <div class="user-container">
+            <div class="user-top">
+              <el-avatar class="user-top-avatar" :size="60" src="https://empty">
+                <img
+                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                />
+              </el-avatar>
+              <span class="user-name">Hi! 你好</span>
+            </div>
+            <div class="user-operation">
+              <el-button type="primary" round size="large">登录</el-button>
+              <el-button type="success" round size="large">注册</el-button>
+            </div>
+            <div class="user-after">
+              <div>
+                <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
+                <div>宝贝收藏</div>
+              </div>
+              <div>
+                <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
+                <div>已购商品</div>
+              </div>
+              <div>
+                <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
+                <div>我的足迹</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="banner-container space">
-          <div class="banner">
-            <el-carousel trigger="click" height="315px">
-              <el-carousel-item v-for="item in 4" :key="item">
-                <h3>{{ item }}</h3>
-              </el-carousel-item>
-            </el-carousel>
-          </div>
-          <div class="notice">
-            <p><el-tag type="danger">规则</el-tag><span>2024年1月淘金重要新规速递</span></p>
-          </div>
-        </div>
-        <div class="user-container">
-          <div class="user-top">
-            <el-avatar class="user-top-avatar" :size="60" src="https://empty">
-              <img
-                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-              />
-            </el-avatar>
-            <span class="user-name">Hi! 你好</span>
-          </div>
-          <div class="user-operation">
-            <el-button type="primary" round size="large">登录</el-button>
-            <el-button type="success" round size="large">注册</el-button>
-          </div>
-          <div class="user-after">
-            <div>
-              <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
-              <div>宝贝收藏</div>
-            </div>
-            <div>
-              <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
-              <div>已购商品</div>
-            </div>
-            <div>
-              <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
-              <div>我的足迹</div>
-            </div>
-          </div>
+        <div>
+          <h3 class="title">猜你喜欢</h3>
+          <el-row style="margin-top: -9px; margin-bottom: -9px;" :gutter="18">
+            <el-col style="padding-top: 9px; padding-bottom: 9px;" v-for="i in 4" :lg="8" :md="12">
+              <ProductItem title="四角油扬 日式豆腐皮寿司饭团 材料和船寿司 味付油扬 寿司豆腐" price="10.52" originalPrice="99.99" img="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
+            </el-col>
+          </el-row>
         </div>
       </el-main>
     </el-container>
@@ -88,16 +98,21 @@
 
 <script>
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
+import ProductItem from '../../components/content/ProductItem.vue';
 export default {
   data() {
     return {
-      searchText: ""
+      searchText: "",
+      banners: [
+        '/img/banner_0.jpg',
+        '/img/banner_1.jpg'
+      ]
     };
   },
   methods: {},
   mounted() {
   },
-  components: { IconSVGComponent }
+  components: { IconSVGComponent, ProductItem }
 }
 </script>
 
@@ -178,7 +193,6 @@ export default {
 .body {
   border-radius: 15px;
   background-color: var(--el-input-bg-color,var(--el-fill-color-blank));
-  display: flex;
 }
 
 .category-container {
@@ -289,19 +303,11 @@ export default {
   margin-right: 10px;
 }
 
-.el-carousel__item h3 {
-  color: #475669;
-  opacity: 0.75;
-  line-height: 150px;
-  margin: 0;
-  text-align: center;
-}
-
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
+.title {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 24px;
 }
 </style>
