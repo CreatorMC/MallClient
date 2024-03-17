@@ -1,27 +1,39 @@
 <template>
   <div id="father">
-    <div id="container">
-      <!-- <LoginComponent v-if="showIndex == 0" @showRegister="showRegister" @showForget="showForget" />
-      <RegisterComponent v-else-if="showIndex == 1" @showLogin="showLogin" />
-      <ForgetComponent v-else-if="showIndex == 2" @showLogin="showLogin" /> -->
+    <div id="header">
+      <div class="logo">
+        <router-link to="/">
+          <img src="/img/logo.png" alt="">
+        </router-link>
+      </div>
     </div>
-    <el-image class="bg-img" src="/img/admin_bg.jpg" fit="cover" draggable="false" @contextmenu="rightClick"></el-image>
+    <div id="container">
+      <div class="login-newbg"></div>
+      <div class="content-layout">
+        <div class="login-box-warp">
+          <LoginComponent v-if="showIndex == 0" @showRegister="showRegister" @showForget="showForget" />
+          <RegisterComponent v-else-if="showIndex == 1" @showLogin="showLogin" />
+          <ForgetComponent v-else-if="showIndex == 2" @showLogin="showLogin" />
+        </div>
+      </div>
+    </div>
+    <FooterComponent />
   </div>
 </template>
 
 <script>
-// import LoginComponent from '@/components/login/LoginComponent.vue';
-// import RegisterComponent from '@/components/login/RegisterComponent.vue';
-// import ForgetComponent from '../../components/login/ForgetComponent.vue';
+import FooterComponent from '@/components/main/FooterComponent.vue';
+import LoginComponent from '@/components/login/LoginComponent.vue';
+import RegisterComponent from '@/components/login/RegisterComponent.vue';
+import ForgetComponent from '@/components/login/ForgetComponent.vue';
 
 export default {
   data() {
     return {
-      backgroundImg: "",
       // 显示哪个组件
       // 0：登录 1：注册 2：找回密码
       showIndex: 0
-    }
+    };
   },
   methods: {
     /**
@@ -41,71 +53,64 @@ export default {
      */
     showForget() {
       this.showIndex = 2;
-    },
-    rightClick(e) {
-      //禁止右键保存图片
-      e.preventDefault();
     }
   },
   mounted() {
   },
-  // components: { LoginComponent, RegisterComponent, ForgetComponent }
+  components: { FooterComponent, LoginComponent, RegisterComponent, ForgetComponent }
 }
 </script>
 
 <style lang="scss" scoped>
-.bg-img {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: -10;
-  //禁止选中背景图片
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-#container {
-  position: absolute;
-  width: 30%;
-  height: fit-content;
-  min-width: 300px;
-  padding: 20px;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  margin: auto;
-  border-radius: var(--el-border-radius-round);
-  overflow: hidden;
-  :deep(.title) {
-    text-align: center;
-    font-size: x-large;
-    font-weight: bold;
-    padding-bottom: 18px;
-  }
-  :deep(.el-input) {
-    height: 50px;
-  }
-  :deep(button) {
-    height: 40px;
-  }
-}
-#container::before {
-  content: "";
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(4px);
-  background-color: rgba(255, 255, 255, 0.399);
-  z-index: -1;
+#father {
+  background-color: white;
 }
 
-#father {
+#header {
+  padding: 22px 0;
+  height: 88px;
+  box-sizing: border-box;
+  .logo {
+    width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    img {
+      height: 100%;
+    }
+  }
+}
+
+#container {
   width: 100%;
-  height: 100vh;
+  position: relative;
+  .login-newbg{
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    width: 100%;
+    height: 600px;
+    background-image: url("/img/login_bg.jpg");
+  }
+  .content-layout {
+    width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    height: 600px;
+    z-index: 100;
+    .login-box-warp {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      width: 350px;
+      background-color: hsla(0,0%,100%,.9);
+      padding: 25px;
+    }
+  }
 }
 </style>

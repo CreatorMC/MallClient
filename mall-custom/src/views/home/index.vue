@@ -64,7 +64,7 @@
               <span class="user-name">Hi! 你好</span>
             </div>
             <div class="user-operation">
-              <el-button type="primary" round size="large">登录</el-button>
+              <el-button type="primary" round size="large" @click="$router.push('/login')">登录</el-button>
               <el-button type="success" round size="large">注册</el-button>
             </div>
             <div class="user-after">
@@ -98,7 +98,7 @@
 
 <script>
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
-import ProductItem from '../../components/content/ProductItem.vue';
+import ProductItem from '@/components/content/ProductItem.vue';
 export default {
   data() {
     return {
