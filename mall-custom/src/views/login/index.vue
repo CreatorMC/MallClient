@@ -109,7 +109,7 @@ export default {
       right: 60px;
       width: 350px;
       background-color: hsla(0,0%,100%,.9);
-      padding: 25px;
+      padding: 25px 25px 20px 25px;
     }
   }
 }

@@ -28,9 +28,9 @@
 </template>
 
 <script>
-// import { login } from '@/api/login';
+import { login } from '@/api/login';
 import router from '@/router';
-import { ElMessage } from 'element-plus'; 
+import { ElMessage } from 'element-plus';
 
 export default {
   name: "LoginComponent",

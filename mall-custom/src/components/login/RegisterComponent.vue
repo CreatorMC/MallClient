@@ -9,6 +9,9 @@
     <el-form-item prop="nickName">
       <el-input type="text" v-model="form.nickName" placeholder="昵称"></el-input>
     </el-form-item>
+    <el-form-item prop="phonenumber">
+      <el-input type="text" v-model="form.phonenumber" placeholder="手机号"></el-input>
+    </el-form-item>
     <el-form-item prop="email">
       <el-input type="text" v-model="form.email" placeholder="邮箱（用于找回密码）"></el-input>
     </el-form-item>
@@ -29,7 +32,7 @@
 </template>
 
 <script>
-// import { register } from '@/api/user';
+import { register } from '@/api/user';
 import { ElMessage } from 'element-plus';
 
 export default {
@@ -42,6 +45,7 @@ export default {
       form: {
         userName: "",
         nickName: "",
+        phonenumber: "",
         email: "",
         password: "",
         // 确认密码，请求时不带此字段
@@ -60,6 +64,13 @@ export default {
           {
             required: true,
             message: "请输入昵称",
+            trigger: "blur"
+          }
+        ],
+        phonenumber: [
+          {
+            required: true,
+            message: "请输入手机号",
             trigger: "blur"
           }
         ],
@@ -144,6 +155,7 @@ export default {
           register({
             userName: this.form.userName,
             nickName: this.form.nickName,
+            phonenumber: this.form.phonenumber,
             email: this.form.email,
             password: this.form.password
           }).then((response) => {

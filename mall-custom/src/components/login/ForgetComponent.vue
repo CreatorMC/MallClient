@@ -28,9 +28,9 @@
 </template>
 
 <script>
-// import { sendEmailVCode } from '@/api/login';
+import { sendEmailVCode } from '@/api/login';
 import { ElMessage } from 'element-plus';
-// import { updateUserPassword } from '@/api/user';
+import { updateUserPassword } from '@/api/user';
 
 export default {
   name: "ForgetComponent",
@@ -133,8 +133,12 @@ export default {
      * 发送验证码
      */
     sendEmailVCode() {
+      let emailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+      if (!emailReg.test(this.form.email)) {
+        ElMessage.error("邮箱未填写或格式不正确");
+        return;
+      }
       this.isDisableSendEmail = true;
-      //TODO 先判断邮箱有没有填
       sendEmailVCode(this.form.email).then((response) => {
         if(response != null) {
           this.uuid = response.data;
