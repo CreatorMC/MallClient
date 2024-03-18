@@ -56,6 +56,12 @@ export default {
     }
   },
   mounted() {
+    if(this.$route.params.idx[0]) {
+      this.showIndex = parseInt(this.$route.params.idx[0]);
+      if(this.showIndex < 0 || this.showIndex > 2) {
+        this.showIndex = 0;
+      }
+    }
   },
   components: { FooterComponent, LoginComponent, RegisterComponent, ForgetComponent }
 }

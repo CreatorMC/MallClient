@@ -29,10 +29,17 @@ export default {
 
 <!-- 全局样式 -->
 <style lang="scss">
-body {
-  min-width: 100% !important;
+html,body{
+  width: 100% !important;
+  height: 100%;
+  overflow: hidden;
   margin: 0;
-  overflow-x: hidden;
   background-color: #e1e7e9;
+}
+#app{
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  max-width: none !important;
 }
 </style>

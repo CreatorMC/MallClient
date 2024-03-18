@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="seat"></div>
     <el-container class="container">
       <el-main>
         <div class="top">
@@ -56,30 +55,63 @@
           </div>
           <div class="user-container">
             <div class="user-top">
-              <el-avatar class="user-top-avatar" :size="60" src="https://empty">
+              <el-avatar class="user-top-avatar" :size="60" :src="(user.avatar != null && user.avatar != '') ? user.avatar : '/img/default_head.png'">
                 <img
-                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                  src="/img/default_fail_pic.png"
                 />
               </el-avatar>
-              <span class="user-name">Hi! 你好</span>
+              <span class="user-name" v-if="!isLogin">Hi! 你好</span>
+              <span class="user-name" v-else>
+                <router-link class="link" to="/">
+                  Hi! {{ user.nickName }}
+                </router-link>
+              </span>
             </div>
-            <div class="user-operation">
+            <div class="user-operation" v-if="!isLogin">
               <el-button type="primary" round size="large" @click="$router.push('/login')">登录</el-button>
-              <el-button type="success" round size="large">注册</el-button>
+              <el-button type="success" round size="large" @click="$router.push('/login/1')">注册</el-button>
+            </div>
+            <div class="user-operation" v-else>
+              <router-link class="link" to="/">
+                <strong>0</strong>
+                购物车
+              </router-link>
+              <router-link class="link" to="/">
+                <strong>0</strong>
+                待收货
+              </router-link>
+              <router-link class="link" to="/">
+                <strong>0</strong>
+                待发货
+              </router-link>
+              <router-link class="link" to="/">
+                <strong>0</strong>
+                待付款
+              </router-link>
+              <router-link class="link" to="/">
+                <strong>0</strong>
+                待评价
+              </router-link>
             </div>
             <div class="user-after">
-              <div>
-                <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
-                <div>宝贝收藏</div>
-              </div>
-              <div>
-                <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
-                <div>已购商品</div>
-              </div>
-              <div>
-                <div class="icon"><IconSVGComponent name="icon-biaoxingfill" /></div>
-                <div>我的足迹</div>
-              </div>
+              <router-link class="link" to="/">
+                <div>
+                  <div class="icon"><IconSVGComponent name="icon-biaoxing" /></div>
+                  <div>宝贝收藏</div>
+                </div>
+              </router-link>
+              <router-link class="link" to="/">
+                <div>
+                  <div class="icon"><IconSVGComponent name="icon-gouwudai" /></div>
+                  <div>已购商品</div>
+                </div>
+              </router-link>
+              <router-link class="link" to="/">
+                <div>
+                  <div class="icon"><IconSVGComponent name="icon-shizhong" /></div>
+                  <div>我的足迹</div>
+                </div>
+              </router-link>
             </div>
           </div>
         </div>
@@ -99,6 +131,7 @@
 <script>
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import ProductItem from '@/components/content/ProductItem.vue';
+import { userStore } from '../../store/user';
 export default {
   data() {
     return {
@@ -106,11 +139,23 @@ export default {
       banners: [
         '/img/banner_0.jpg',
         '/img/banner_1.jpg'
-      ]
+      ],
+      user: {
+        avatar: null,
+        id: null
+      }
     };
   },
   methods: {},
   mounted() {
+    const store = userStore();
+    this.user = store.user;
+  },
+  computed: {
+    //是否已登录
+    isLogin() {
+      return this.user.id != null && this.user.id != "";
+    }
   },
   components: { IconSVGComponent, ProductItem }
 }
@@ -283,8 +328,17 @@ export default {
   .user-operation {
     flex: 1;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+    a {
+      text-align: center;
+      strong {
+        display: block;
+        font-size: 14px;
+        color: #f40;
+        height: 18px;
+      }
+    }
   }
   .user-after {
     flex: 1;
@@ -309,5 +363,14 @@ export default {
   height: 24px;
   font-size: 24px;
   line-height: 24px;
+}
+
+.link {
+  color: unset;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: red;
 }
 </style>

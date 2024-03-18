@@ -32,7 +32,7 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  position: fixed;
+  position: sticky;
   z-index: 500;
   width: 100%;
   height: $headHeight;

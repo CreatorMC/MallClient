@@ -12,7 +12,7 @@ const router = createRouter({
       redirect: "/index/home"
     },
     {
-      path: "/login",
+      path: "/login/:idx*",
       name: "login",
       component: () => import('../views/login/index.vue')
     },
