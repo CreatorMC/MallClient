@@ -26,6 +26,11 @@ const router = createRouter({
           name: "home",
           component: () => import('../views/home/index.vue')
         },
+        {
+          path: "product/:id",
+          name: "product",
+          component: () => import('../views/content/product/index.vue')
+        },
       ]
     },
     // 捕获所有未匹配到的路由
