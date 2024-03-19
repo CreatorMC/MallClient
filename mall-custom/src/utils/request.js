@@ -40,14 +40,15 @@ service.interceptors.response.use(function (response) {
     if(code == 401) {
       if(localStorage.getItem("token")) {
         //未登录，并且token存在，提示登录状态过期
-        ElMessageBox.confirm(
-          '您的登录状态已过期。<br>您可以重新登录，或继续留在当前页面。',
-          '提示', 
+        globalProperties.$message(
           {
+            message: '您的登录状态已过期。<br>您可以重新登录，或继续留在当前页面。',
+            title: '提示',
             confirmButtonText: '重新登陆',
             cancelButtonText: '留在此页',
             type: 'warning',
-            dangerouslyUseHTMLString: true
+            dangerouslyUseHTMLString: true,
+            showCancelButton: true
           }
         ).then(() => {
           //删除token
@@ -69,19 +70,16 @@ service.interceptors.response.use(function (response) {
           sessionStorage.clear();
         })
       } else {
-        if(response.config.url.indexOf("/article/getUserLike/") != -1) {
-          //该请求路径不做提示
-          return null;
-        }
         //未登录，但token不存在，提示用户此功能需要登录
-        ElMessageBox.confirm(
-          '此功能需要登录后才能使用<br>您可以立即登录，或继续留在当前页面。',
-          '提示', 
+        globalProperties.$message(
           {
+            message: '此功能需要登录后才能使用<br>您可以立即登录，或继续留在当前页面。',
+            title: '提示',
             confirmButtonText: '立即登陆',
             cancelButtonText: '留在此页',
             type: 'warning',
-            dangerouslyUseHTMLString: true
+            dangerouslyUseHTMLString: true,
+            showCancelButton: true
           }
         ).then(() => {
           //跳转到登录页

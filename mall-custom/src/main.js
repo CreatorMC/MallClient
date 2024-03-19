@@ -11,6 +11,7 @@ import '@/styles/empty.scss'                                    //引入一个�
 import IconSVG from '@/components/utils/IconSVGComponent.vue'   //引入自定义的图标组件
 
 import App from './App.vue'
+import { message } from './utils/no_repeat_message';
 
 NProgress.configure({ showSpinner: false })                     //配置没有加载时的小圈圈
 
@@ -29,6 +30,7 @@ app.use(pinia)
 
 //定义全局属性
 app.config.globalProperties.$nprogress = NProgress  //页面顶部加载进度条
+app.config.globalProperties.$message = message      //不会重复弹出的对话框
 
 app.mount('#app')
 

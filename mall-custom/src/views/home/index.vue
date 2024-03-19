@@ -30,14 +30,11 @@
             <h2>分类</h2>
             <ul>
               <el-scrollbar height="328px">
-                <li>女装</li>
-                <li>女装</li>
-                <li>女装</li>
-                <li>女装</li>
-                <li>女装</li>
-                <li>女装</li>
-                <li>女装</li>
-                <li>女装</li>
+                <li v-for="item in categoryList">
+                  <router-link :to="`/category/${item.id}`">
+                    {{ item.name }}
+                  </router-link>
+                </li>
               </el-scrollbar>
             </ul>
           </div>
@@ -131,7 +128,8 @@
 <script>
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import ProductItem from '@/components/content/ProductItem.vue';
-import { userStore } from '../../store/user';
+import { userStore } from '@/store/user';
+import { getCategoryList } from '@/api/category';
 export default {
   data() {
     return {
@@ -143,13 +141,26 @@ export default {
       user: {
         avatar: null,
         id: null
-      }
+      },
+      categoryList: []
     };
   },
-  methods: {},
+  methods: {
+    /**
+     * 获取分类
+     */
+    getCategoryList() {
+      getCategoryList(1, 9, { name: null }).then((response) => {
+        if(response != null) {
+          this.categoryList = response.data.rows;
+        }
+      })
+    }
+  },
   mounted() {
     const store = userStore();
     this.user = store.user;
+    this.getCategoryList();
   },
   computed: {
     //是否已登录
@@ -264,11 +275,15 @@ export default {
     height: 20px;
     font-size: 14px;
     font-weight: 400;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     color: #666;
     list-style: inside;
   }
-  li:hover {
+  li a {
+    color: #666;
+    text-decoration: none;
+  }
+  li a:hover {
     color: red;
     text-decoration: underline;
   }
