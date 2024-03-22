@@ -82,7 +82,7 @@ import TopSearchComponent from '@/components/content/TopSearchComponent.vue';
 import Price from '@/components/content/Price.vue';
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import { getProduct } from '@/api/product';
-import { getCustomProperty } from '../../../api/property'
+import { getCustomProperty } from '@/api/property'
 import { parseBalance } from '@/utils/util';
 export default {
   data() {
