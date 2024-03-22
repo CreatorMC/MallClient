@@ -9,6 +9,7 @@ import 'nprogress/nprogress.css'
 import { createPinia } from 'pinia'                             //引入 Pinia
 import '@/styles/empty.scss'                                    //引入一个空的scss，解决部分scss样式不生效问题
 import IconSVG from '@/components/utils/IconSVGComponent.vue'   //引入自定义的图标组件
+import { Marked } from 'marked'                                 //引入 Marked 用于渲染 Markdown
 
 import App from './App.vue'
 import { message } from './utils/no_repeat_message';
@@ -31,6 +32,7 @@ app.use(pinia)
 //定义全局属性
 app.config.globalProperties.$nprogress = NProgress  //页面顶部加载进度条
 app.config.globalProperties.$message = message      //不会重复弹出的对话框
+app.config.globalProperties.$markdown = new Marked()//渲染 markdown
 
 app.mount('#app')
 

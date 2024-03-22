@@ -8,21 +8,16 @@
               {{ title }}
             </div>
           </div>
-          <div class="price-wrapper">
-            <span class="price-value">
-              <em>¥</em>
-              <span>{{ price }}</span>
-              <span class="price-value-original">{{ originalPrice != null ? originalPrice : '' }}</span>
-            </span>
-          </div>
+          <Price :price="price" :original-price="originalPrice" />
         </div>
       </div>
     </router-link>
 </template>
 
 <script>
+import Price from './Price.vue';
 export default {
-  name: 'ProductItem',
+  name: "ProductItem",
   props: {
     title: {
       type: String,
@@ -44,10 +39,9 @@ export default {
     }
   },
   data() {
-    return {
-
-    };
-  }
+    return {};
+  },
+  components: { Price }
 }
 </script>
 
@@ -87,26 +81,6 @@ export default {
         }
         .title:hover {
           color: #ff915e;
-        }
-      }
-      .price-wrapper {
-        color: #ff5000;
-        .price-value {
-          display: inline-block;
-          font-size: 22px;
-          line-height: 22px;
-          em {
-            margin-right: 4px;
-            font-size: 14px;
-            font-family: "Microsoft Yahei";
-            vertical-align: middle;
-            font-style: normal;
-          }
-          .price-value-original {
-            margin-left: 4px;
-            font-size: 14px;
-            text-decoration: line-through;
-          }
         }
       }
     }
