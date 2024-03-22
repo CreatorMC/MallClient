@@ -82,6 +82,7 @@ import TopSearchComponent from '@/components/content/TopSearchComponent.vue';
 import Price from '@/components/content/Price.vue';
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import { getProduct } from '@/api/product';
+import { getCustomProperty } from '../../../api/property'
 import { parseBalance } from '@/utils/util';
 export default {
   data() {
@@ -94,23 +95,7 @@ export default {
       //地址
       address: 1,
       //商品属性
-      property: {
-        '1': {
-          name: "颜色",
-          values: {
-            '1': "红色",
-            '2': "绿色"
-          }
-        },
-        '2': {
-          name: "型号",
-          values: {
-            '3': "大",
-            '4': "中",
-            '5': "小",
-          }
-        }
-      },
+      property: {},
       //详情图片（markdown 格式）
       productImage: "",
       form: {
@@ -153,6 +138,13 @@ export default {
         }
       })
     },
+    getCustomProperty() {
+      getCustomProperty(this.id).then((response) => {
+        if(response != null) {
+          this.property = response.data.property;
+        }
+      })
+    },
     parseBalance(balance) {
       return parseBalance(balance);
     }
@@ -160,6 +152,7 @@ export default {
   mounted() {
     this.id = this.$route.params.id;
     this.getProduct();
+    this.getCustomProperty();
   },
   components: { TopSearchComponent, Price, IconSVGComponent }
 }
@@ -177,6 +170,7 @@ export default {
     .left-pic-container {
       width: 450px;
       .show-item {
+        width: 450px;
         height: 450px;
       }
       .pic-thumbnails {
