@@ -112,11 +112,17 @@
             </div>
           </div>
         </div>
-        <div>
+        <div v-infinite-scroll="getProductList">
           <h3 class="title">猜你喜欢</h3>
           <el-row style="margin-top: -9px; margin-bottom: -9px;" :gutter="18">
-            <el-col style="padding-top: 9px; padding-bottom: 9px;" v-for="i in 4" :lg="8" :md="12">
-              <ProductItem title="四角油扬 日式豆腐皮寿司饭团 材料和船寿司 味付油扬 寿司豆腐" price="10.52" originalPrice="99.99" img="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
+            <el-col style="padding-top: 9px; padding-bottom: 9px;" v-for="item in products" :lg="8" :md="12">
+              <ProductItem
+                :id="item.id"
+                :title="item.name"
+                :price="parseBalance(item.promotePrice ? item.promotePrice : item.originalPrice)"
+                :originalPrice="item.promotePrice ? parseBalance(item.originalPrice) : null"
+                :img="item.thumbnail"
+              />
             </el-col>
           </el-row>
         </div>
@@ -130,6 +136,8 @@ import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import ProductItem from '@/components/content/ProductItem.vue';
 import { userStore } from '@/store/user';
 import { getCategoryList } from '@/api/category';
+import { getProductList } from '@/api/product';
+import { parseBalance } from '@/utils/util';
 export default {
   data() {
     return {
@@ -142,7 +150,10 @@ export default {
         avatar: null,
         id: null
       },
-      categoryList: []
+      categoryList: [],
+      products: [],
+      pageNum: 1,
+      pageSize: 12
     };
   },
   methods: {
@@ -155,6 +166,17 @@ export default {
           this.categoryList = response.data.rows;
         }
       })
+    },
+    getProductList() {
+      getProductList(this.pageNum, this.pageSize, { name: null, categoryId: null }).then((response) => {
+        if(response != null) {
+          this.products = this.products.concat(response.data.rows);
+          this.pageNum++;
+        }
+      })
+    },
+    parseBalance(balance) {
+      return parseBalance(balance);
     }
   },
   mounted() {

@@ -6,16 +6,19 @@
         <div class="left-pic-container">
           <el-image class="show-item" :src="showImage" fit="contain" />
           <div ref="thumbnails" class="pic-thumbnails">
-            <div v-for="i in 5">
-              <el-image class="thumbnail" :src="srcList[i - 1]" fit="contain" @mouseenter="handleMouseEnter" />
+            <div v-for="item in product.productImageList">
+              <el-image class="thumbnail" :src="item" fit="contain" @mouseenter="handleMouseEnter" />
             </div>
           </div>
         </div>
         <div class="right-container">
           <div style="width: 100%;">
-            <h1 class="main-title">{{ title }}</h1>
+            <h1 class="main-title">{{ product.name }}</h1>
           </div>
-          <Price class="margin-top" price="10.5" original-price="8.02"/>
+          <Price class="margin-top"
+            :price="parseBalance(product.promotePrice ? product.promotePrice : product.originalPrice)"
+            :original-price="product.promotePrice ? parseBalance(product.originalPrice) : null"
+          />
           <div class="margin-top mcdelivery">
             <span class="label">配送地址：</span>
             <el-select
@@ -45,9 +48,9 @@
             </div>
             <div class="sku-cate">
               <span class="label">数量：</span>
-              <el-input-number v-model="form.num" size="large" :min="1" :max="stock > 0 ? stock : 1" :disabled="stock <= 0" />
+              <el-input-number v-model="form.num" size="large" :min="1" :max="product.stock > 0 ? product.stock : 1" :disabled="product.stock <= 0" />
               <div style="width: 10px;"></div>
-              <el-tag v-if="stock > 0" size="large" type="success">有货</el-tag>
+              <el-tag v-if="product.stock > 0" size="large" type="success">有货</el-tag>
               <el-tag v-else size="large" type="danger">缺货</el-tag>
             </div>
           </div>
@@ -78,21 +81,16 @@
 import TopSearchComponent from '@/components/content/TopSearchComponent.vue';
 import Price from '@/components/content/Price.vue';
 import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
+import { getProduct } from '@/api/product';
+import { parseBalance } from '@/utils/util';
 export default {
   data() {
     return {
+      id: "",
       tab: "1",
       showImage: "",
-      //商品标题
-      title: "",
-      //商品预览图
-      srcList: [
-        '/img/banner_0.jpg',
-        '/img/banner_1.jpg',
-        '/img/default_fail_pic.png',
-        '/img/404.png',
-        '/img/default_head.png'
-      ],
+      //商品对象
+      product: {},
       //地址
       address: 1,
       //商品属性
@@ -113,8 +111,6 @@ export default {
           }
         }
       },
-      //库存
-      stock: 10,
       //详情图片（markdown 格式）
       productImage: "",
       form: {
@@ -134,15 +130,36 @@ export default {
       }
       event.target.parentNode.classList.add('pic-active');
       this.showImage = event.target.src;
+    },
+    getProduct() {
+      getProduct(this.id).then((response) => {
+        if(response != null) {
+          this.product = response.data;
+          //默认显示第一张图片
+          let that = this;
+          this.$nextTick(() => {
+            let cs = that.$refs['thumbnails'].childNodes;
+            cs[1].firstChild.classList.add('pic-active');
+          });
+          this.showImage = (this.product.hasOwnProperty('productImageList') && this.product.productImageList.length > 0) ? this.product.productImageList[0] : null;
+          //组合详情图片
+          if(this.product.productDetailImageList != null && this.product.productDetailImageList.length > 0) {
+            let temp = "";
+            for(let i = 0; i < this.product.productDetailImageList.length; i++) {
+              temp += `![image](${this.product.productDetailImageList[i]})`;
+            }
+            this.productImage = this.$markdown.parse(temp);
+          }
+        }
+      })
+    },
+    parseBalance(balance) {
+      return parseBalance(balance);
     }
   },
   mounted() {
-    //初始化展示图片
-    let cs = this.$refs['thumbnails'].childNodes;
-    cs[1].firstChild.classList.add('pic-active');
-    this.showImage = this.srcList[0];
-
-    this.productImage = this.$markdown.parse("![image](http://127.0.0.1:8081/resources/product_image/2024/03/9f1e08ec8d5a41a1aa883b5c4ddbab08.jpg)![image](http://127.0.0.1:8081/resources/product_image/2024/03/3b736f39111f4e6cbdbba6755317e96c.jpg)![image](http://127.0.0.1:8081/resources/product_image/2024/03/82c9a446ec134dfaa5b4e12977e4f533.jpg)");
+    this.id = this.$route.params.id;
+    this.getProduct();
   },
   components: { TopSearchComponent, Price, IconSVGComponent }
 }

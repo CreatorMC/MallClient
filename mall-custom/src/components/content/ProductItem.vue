@@ -1,5 +1,5 @@
 <template>
-    <router-link class="product-container" to="/">
+    <router-link class="product-container" :to="`/index/product/${id}`">
       <div>
         <el-image class="img" fit="fill" :src="img"></el-image>
         <div class="product-right">
@@ -19,6 +19,10 @@ import Price from './Price.vue';
 export default {
   name: "ProductItem",
   props: {
+    id: {
+      type: String,
+      required: true
+    },
     title: {
       type: String,
       required: true
@@ -34,8 +38,7 @@ export default {
     },
     // 商品封面图
     img: {
-      type: String,
-      required: true
+      type: String
     }
   },
   data() {
