@@ -250,6 +250,18 @@ export default {
           align-items: center;
           .skuItemWrapper {
             flex: 1;
+            :deep(.el-radio-button__inner) {
+              border-left: var(--el-border);
+              border-right: var(--el-border);
+              border-radius: var(--el-border-radius-base);
+            }
+            :deep(.el-radio-button__original-radio:checked+.el-radio-button__inner) {
+              border-color: var(--el-radio-button-checked-border-color,var(--el-color-primary));
+            }
+            :deep(.el-radio-button) {
+              margin-right: 5px;
+              margin-bottom: 5px;
+            }
           }
         }
         .action-group {

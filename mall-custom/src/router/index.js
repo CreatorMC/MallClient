@@ -31,6 +31,11 @@ const router = createRouter({
           name: "product",
           component: () => import('../views/content/product/index.vue')
         },
+        {
+          path: "cart",
+          name: "cart",
+          component: () => import('../views/content/cart/index.vue')
+        }
       ]
     },
     // 捕获所有未匹配到的路由
