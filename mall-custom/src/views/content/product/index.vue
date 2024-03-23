@@ -57,7 +57,7 @@
           <div class="basic-content">
             <el-button-group class="action-group">
               <el-button size="large">立即购买</el-button>
-              <el-button size="large">加入购物车</el-button>
+              <el-button size="large" @click="addCart">加入购物车</el-button>
             </el-button-group>
             <span style="width: 10px; display: inline-block;"></span>
             <el-button text round>
@@ -84,6 +84,8 @@ import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import { getProduct } from '@/api/product';
 import { getCustomProperty } from '@/api/property'
 import { parseBalance } from '@/utils/util';
+import { addCart } from '@/api/cart';
+import { ElMessage } from 'element-plus';
 export default {
   data() {
     return {
@@ -142,6 +144,24 @@ export default {
       getCustomProperty(this.id).then((response) => {
         if(response != null) {
           this.property = response.data.property;
+        }
+      })
+    },
+    /**
+     * 添加商品到购物车
+     */
+    addCart() {
+      if(this.form.specFix == null || Object.keys(this.form.specFix).length === 0) {
+        ElMessage.warning("请选择您要的商品信息");
+        return;
+      }
+      addCart({
+        productId: this.id,
+        num: this.form.num,
+        spec: JSON.stringify(this.form.specFix)
+      }).then((response) => {
+        if(response != null) {
+          ElMessage.success("成功添加到购物车");
         }
       })
     },
