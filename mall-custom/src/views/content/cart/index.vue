@@ -70,7 +70,7 @@
 <script>
 import TopSearchComponent from '@/components/content/TopSearchComponent.vue';
 import { parseBalance } from '@/utils/util';
-import PropertyValueDialog from '../../../components/content/PropertyValueDialog.vue';
+import PropertyValueDialog from '@/components/content/PropertyValueDialog.vue';
 export default {
   data() {
     return {
