@@ -48,14 +48,10 @@ const router = createRouter({
     }
   ],
   scrollBehavior(to, from, savedPosition) {
-    if (to.fullPath == '/index/home') {
-      // 首页滚动到顶部
-      return { top: 0 };
-    } else if (savedPosition) {
-      // 保持浏览器默认滚动行为
-      return savedPosition;
+    var el = document.querySelector('#app > div')
+    if(el) {
+      el.scrollIntoView();
     }
-    return null;
   }
 });
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-infinite-scroll="getProductList">
     <el-container class="container">
       <el-main>
         <div class="top">
@@ -112,7 +112,7 @@
             </div>
           </div>
         </div>
-        <div v-infinite-scroll="getProductList">
+        <div>
           <h3 class="title">猜你喜欢</h3>
           <el-row style="margin-top: -9px; margin-bottom: -9px;" :gutter="18">
             <el-col style="padding-top: 9px; padding-bottom: 9px;" v-for="item in products" :lg="8" :md="12">
