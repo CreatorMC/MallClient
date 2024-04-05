@@ -3,6 +3,8 @@
     v-model="dialogVisible"
     title="商品信息"
     width="500"
+    @open="handlerOpenDialog"
+    @close="handlerCloseDialog"
   >
   <div>
     <div v-for="item, key in dialogProperty" class="item">
@@ -20,8 +22,11 @@
   </div>
   <template #footer>
     <div class="dialog-footer">
-      <el-button type="primary" @click="dialogVisible = false">
+      <el-button type="primary" @click="clickConfirm">
         确认
+      </el-button>
+      <el-button @click="clickCancel">
+        取消
       </el-button>
     </div>
   </template>
@@ -29,22 +34,62 @@
 </template>
 
 <script>
+import { shallowEqual } from '@/utils/util';
+
 export default {
   name: 'PropertyValueDialog',
   props: [
     'visible',
     'property',
-    'spec'
+    'spec',
+    //购物车项 id
+    'id'
   ],
   emits: [
     'update:visible',
     'update:property',
-    'update:spec'
+    'update:spec',
+    'confirm'
   ],
   data() {
     return {
-
+      //记录刚打开对话框时的参数，以便在点击取消按钮后恢复
+      originalSpec: {},
+      //记录退出时是否点击的是确认按钮
+      isConfim: false
     };
+  },
+  methods: {
+    clickConfirm() {
+      this.isConfim = true;
+      this.dialogVisible = false;
+      //两个对象不相同才发送确认事件
+      if(!shallowEqual(this.dialogSpec, this.originalSpec)) {
+        this.$emit('confirm', this.id);
+      }
+    },
+    clickCancel() {
+      this.isConfim = false;
+      //赋每个 key 的值，不要直接赋引用，因为直接赋值引用会改变 dialogSpec 变量指向的地址。
+      Object.keys(this.dialogSpec).forEach(key => {
+        this.dialogSpec[key] = this.originalSpec[key];
+      });
+      this.dialogVisible = false;
+    },
+    handlerOpenDialog() {
+      //刚打开对话框时触发
+      //深拷贝
+      this.originalSpec = JSON.parse(JSON.stringify(this.dialogSpec));
+      //默认 false
+      this.isConfim = false;
+    },
+    handlerCloseDialog() {
+      //关闭对话框时触发
+      //判断，如果没有点击确定按钮就关闭了对话框，那么需要还原 dialogSpec
+      if(!this.isConfim) {
+        this.clickCancel();
+      }
+    }
   },
   computed: {
     dialogVisible: {

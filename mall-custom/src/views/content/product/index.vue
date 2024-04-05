@@ -151,7 +151,7 @@ export default {
      * 添加商品到购物车
      */
     addCart() {
-      if(this.form.specFix == null || Object.keys(this.form.specFix).length === 0) {
+      if(this.form.specFix == null || Object.keys(this.form.specFix).length != Object.keys(this.property).length) {
         ElMessage.warning("请选择您要的商品信息");
         return;
       }

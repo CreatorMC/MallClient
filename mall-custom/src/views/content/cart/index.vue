@@ -1,7 +1,13 @@
 <template>
   <div style="background-color: #e8ded9; padding-bottom: 40px;">
     <TopSearchComponent />
-    <PropertyValueDialog v-model:visible="propertyValueDialogVisible" v-model:property="dialogProperty" v-model:spec="dialogSpec" />
+    <PropertyValueDialog
+      v-model:visible="propertyValueDialogVisible"
+      v-model:property="dialogProperty"
+      v-model:spec="dialogSpec"
+      :id="dialogId"
+      @confirm="handlerConfirm"
+    />
     <el-main class="container">
       <div class="title">购物车</div>
       <el-divider />
@@ -11,12 +17,12 @@
           <template #default="scope">
             <div class="flex-container">
               <div>
-                <router-link :to="'/index/product/' + scope.row.id" style="height: 80px; display: block;">
+                <router-link :to="'/index/product/' + scope.row.productId" style="height: 80px; display: block;">
                   <el-image style="width: 80px; height: 80px;" :src="scope.row.thumbnail" fit="contain" />
                 </router-link>
               </div>
               <div>
-                <router-link class="product-name" :to="'/index/product/' + scope.row.id">
+                <router-link class="product-name" :to="'/index/product/' + scope.row.productId">
                   {{ scope.row.name }}
                 </router-link>
               </div>
@@ -46,7 +52,7 @@
         </el-table-column>
         <el-table-column label="数量" width="150">
           <template #default="scope">
-            <el-input-number v-model="scope.row.num" :min="1" :max="scope.row.stock" size="small" />
+            <el-input-number v-model="scope.row.num" :min="1" :max="scope.row.stock" size="small" @change="handlerChangeNum($currentValue, $oldValue, scope.row)" />
           </template>
         </el-table-column>
         <el-table-column label="金额">
@@ -58,7 +64,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button type="danger" size="small">删除</el-button>
+            <el-button type="danger" size="small" @click="deleteCart([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -71,6 +77,8 @@
 import TopSearchComponent from '@/components/content/TopSearchComponent.vue';
 import { parseBalance } from '@/utils/util';
 import PropertyValueDialog from '@/components/content/PropertyValueDialog.vue';
+import { getCart, deleteCart, updateCart } from '@/api/cart';
+import { ElMessageBox, ElMessage } from 'element-plus';
 export default {
   data() {
     return {
@@ -78,60 +86,9 @@ export default {
       propertyValueDialogVisible: false,
       dialogProperty: {},
       dialogSpec: {},
-      products: [
-        {
-          //商品 id
-          id: "1",
-          thumbnail: "http://127.0.0.1:8081/resources/product_image/2024/03/d8fd1ac2a3244ae5a8983d85fccdc757.jpg",
-          name: "烤熟整箱商用烘焙花生碎炒原味花生仁奶茶牛轧糖蛋糕配料5斤袋装",
-          //商品属性
-          property: {
-            '1': {
-              name: "颜色",
-              values: {
-                '1': "红色",
-                '2': "绿色"
-              }
-            },
-            '2': {
-              name: "型号",
-              values: {
-                '3': "大",
-                '4': "中",
-                '5': "小",
-              }
-            },
-            '3': {
-              name: "包装",
-              values: {
-                '1': "朴实",
-                '2': "华丽",
-                '3': "得瑟",
-                '4': "皇家",
-                '5': "金贵",
-                '6': "24K纯金",
-                '7': "牛皮",
-                '8': "铁箱",
-                '9': "木头",
-              }
-            }
-          },
-          //用户选择的属性
-          spec: {
-            '1': '2',
-            '2': '3',
-            '3': '6'
-          },
-          //单价
-          price: "10005",
-          //数量
-          num: 1,
-          //库存（约束数量的值）
-          stock: 5,
-          //是否显示该商品属性的编辑按钮
-          isShowEdit: false
-        }
-      ]
+      //传给商品信息对话框的购物车项 id
+      dialogId: "",
+      products: []
     };
   },
   methods: {
@@ -141,6 +98,76 @@ export default {
     handlerMouseLeave(event, product) {
       product.isShowEdit = false;
     },
+    handlerChangeNum(currentValue, oldValue, data) {
+      this.updateCart(data);
+    },
+    handlerConfirm(id) {
+      for(let i = 0; i < this.products.length; i++) {
+        //找到与给定 id 相同的购物车项
+        if(this.products[i].id === id) {
+          //更新此购物车项
+          this.updateCart(this.products[i]);
+          break;
+        }
+      }
+    },
+    /**
+     * 更新购物车项
+     */
+    updateCart(data) {
+      let dto = {
+        id: data.id,
+        productId: data.productId,
+        num: data.num,
+        spec: JSON.stringify(data.spec)
+      }
+      updateCart(dto).then((response) => {
+        if(response != null) {
+          //更新成功，不用任何提示
+        }
+      });
+    },
+    /**
+     * 得到购物车列表
+     */
+    getCart() {
+      getCart().then((response) => {
+        if(response != null) {
+          this.products = response.data;
+          //将 spec 转换为对象
+          for(let i = 0; i < this.products.length; i++) {
+            let t = this.products[i].spec;
+            if(typeof t == 'string') {
+              this.products[i].spec = JSON.parse(t);
+            }
+          }
+        }
+      })
+    },
+    /**
+     * 删除购物车项
+     */
+    deleteCart(ids) {
+      ElMessageBox.confirm(
+        '确定要删除选中的商品吗？',
+        '警告',
+        {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      ).then(() => {
+        //确认
+        deleteCart(ids).then((response) => {
+          if(response != null) {
+            ElMessage.success("删除成功");
+            this.getCart();
+          }
+        });
+      }).catch(() => {
+        //取消
+      });
+    },
     /**
      * 打开商品信息对话框
      */
@@ -148,10 +175,14 @@ export default {
       this.propertyValueDialogVisible = true;
       this.dialogProperty = product.property;
       this.dialogSpec = product.spec;
+      this.dialogId = product.id;
     },
     parseBalance(balance) {
       return parseBalance(balance);
     }
+  },
+  mounted() {
+    this.getCart();
   },
   components: { TopSearchComponent, PropertyValueDialog }
 }
