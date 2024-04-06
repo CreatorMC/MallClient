@@ -28,10 +28,9 @@
               style="flex: 1"
             >
               <el-option
-                v-for="item in 5"
-                :key="item"
-                :label="item"
-                :value="item"
+                v-for="item in addresses"
+                :label="item.province + ' ' + item.city + ' ' + item.town + ' ' + item.street + ' ' + item.mobile"
+                :value="item.id"
               />
             </el-select>
           </div>
@@ -86,6 +85,7 @@ import { getCustomProperty } from '@/api/property'
 import { parseBalance } from '@/utils/util';
 import { addCart } from '@/api/cart';
 import { ElMessage } from 'element-plus';
+import { listAddresses } from '@/api/address';
 export default {
   data() {
     return {
@@ -95,7 +95,9 @@ export default {
       //商品对象
       product: {},
       //地址
-      address: 1,
+      address: null,
+      //地址列表
+      addresses: [],
       //商品属性
       property: {},
       //详情图片（markdown 格式）
@@ -147,6 +149,20 @@ export default {
         }
       })
     },
+    listAddresses() {
+      listAddresses().then((response) => {
+        if(response != null) {
+          this.addresses = response.data;
+          //找默认地址
+          for(let i = 0; i < this.addresses.length; i++) {
+            if(this.addresses[i].ifDefault) {
+              this.address = this.addresses[i].id;
+              break;
+            }
+          }
+        }
+      });
+    },
     /**
      * 添加商品到购物车
      */
@@ -173,6 +189,7 @@ export default {
     this.id = this.$route.params.id;
     this.getProduct();
     this.getCustomProperty();
+    this.listAddresses();
   },
   components: { TopSearchComponent, Price, IconSVGComponent }
 }
