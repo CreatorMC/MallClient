@@ -19,6 +19,7 @@ const router = createRouter({
     {
       path: "/index",
       name: "index",
+      redirect: "/index/home",
       component: Index,
       children: [
         {
@@ -35,6 +36,19 @@ const router = createRouter({
           path: "cart",
           name: "cart",
           component: () => import('../views/content/cart/index.vue')
+        },
+        {
+          path: "order",
+          name: "order",
+          redirect: "/index/order/submit",
+          component: () => import('../views/content/order/index.vue'),
+          children: [
+            {
+              path: "submit",
+              name: "submit",
+              component: () => import('../views/content/order/submit.vue')
+            }
+          ]
         }
       ]
     },
