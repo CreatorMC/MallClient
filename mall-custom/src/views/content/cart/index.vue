@@ -11,7 +11,7 @@
     <el-main class="container">
       <div class="title">购物车</div>
       <el-divider />
-      <el-table :data="products">
+      <el-table ref="table" :data="products" @selection-change="handlerSelectionChange">
         <el-table-column type="selection" />
         <el-table-column label="商品名称" width="300">
           <template #default="scope">
@@ -69,6 +69,19 @@
         </el-table-column>
       </el-table>
       <el-divider />
+      <div class="footer">
+        <el-button text type="primary" @click="$refs['table'].toggleAllSelection()">全选</el-button>
+        <el-button text type="danger" @click="deleteCarts">删除</el-button>
+        <div style="flex: 1;"></div>
+        <div class="box">
+          已选商品&nbsp;<span class="big-num">{{ selectProductCount }}</span>&nbsp;件
+        </div>
+        <div style="flex: 0.1;"></div>
+        <div class="box">
+          合计：<span style="font-size: 24px;" class="big-num">{{ parseBalance(totalPrice) == "无" ? "0" : parseBalance(totalPrice) }}</span>&nbsp;&nbsp;
+          <el-button type="danger" size="large" round :disabled="disableSubmit">结算</el-button>
+        </div>
+      </div>
     </el-main>
   </div>
 </template>
@@ -86,6 +99,12 @@ export default {
       propertyValueDialogVisible: false,
       dialogProperty: {},
       dialogSpec: {},
+      //已选几件商品
+      selectProductCount: 0,
+      //合计（总价格）
+      totalPrice: 0,
+      //是否禁用结算按钮
+      disableSubmit: true,
       //传给商品信息对话框的购物车项 id
       dialogId: "",
       products: []
@@ -100,6 +119,7 @@ export default {
     },
     handlerChangeNum(currentValue, oldValue, data) {
       this.updateCart(data);
+      this.computTotalPrice(this.$refs['table'].getSelectionRows());
     },
     handlerConfirm(id) {
       for(let i = 0; i < this.products.length; i++) {
@@ -110,6 +130,27 @@ export default {
           break;
         }
       }
+    },
+    handlerSelectionChange(newSelection) {
+      this.selectProductCount = newSelection.length;
+      if(newSelection.length > 0) {
+        //有选中的商品，不禁用结算按钮
+        this.disableSubmit = false;
+      } else {
+        //没有选中的商品，禁用结算按钮
+        this.disableSubmit = true;
+      }
+      this.computTotalPrice(newSelection);
+    },
+    /**
+     * 计算总价格
+     */
+    computTotalPrice(newSelection) {
+      let tempTotal = 0;
+      for(let i = 0; i < newSelection.length; i++) {
+        tempTotal += newSelection[i].price * newSelection[i].num
+      }
+      this.totalPrice = tempTotal;
     },
     /**
      * 更新购物车项
@@ -167,6 +208,21 @@ export default {
       }).catch(() => {
         //取消
       });
+    },
+    /**
+     * 删除多个购物车项
+     */
+    deleteCarts() {
+      let rows = this.$refs['table'].getSelectionRows();
+      if(rows.length <= 0) {
+        ElMessage.warning("请选择商品");
+        return;
+      }
+      let ids = [];
+      for(let i = 0; i < rows.length; i++) {
+        ids.push(rows[i].id);
+      }
+      this.deleteCart(ids);
     },
     /**
      * 打开商品信息对话框
@@ -253,6 +309,20 @@ export default {
   }
   :deep(tbody) {
     font-size: 12px;
+  }
+  .footer {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    .big-num {
+      font-weight: bold;
+      font-size: 20px;
+      color: #f40;
+    }
+    .box {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 .item-red {
