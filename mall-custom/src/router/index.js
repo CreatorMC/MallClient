@@ -44,9 +44,10 @@ const router = createRouter({
           component: () => import('../views/content/order/index.vue'),
           children: [
             {
-              path: "submit",
+              path: "submit/:cartItemIds*",
               name: "submit",
-              component: () => import('../views/content/order/submit.vue')
+              component: () => import('../views/content/order/submit.vue'),
+              props: true
             }
           ]
         }

@@ -79,7 +79,7 @@
         <div style="flex: 0.1;"></div>
         <div class="box">
           合计：<span style="font-size: 24px;" class="big-num">{{ parseBalance(totalPrice) == "无" ? "0" : parseBalance(totalPrice) }}</span>&nbsp;&nbsp;
-          <el-button type="danger" size="large" round :disabled="disableSubmit">结算</el-button>
+          <el-button type="danger" size="large" round :disabled="disableSubmit" @click="submit">结算</el-button>
         </div>
       </div>
     </el-main>
@@ -141,6 +141,18 @@ export default {
         this.disableSubmit = true;
       }
       this.computTotalPrice(newSelection);
+    },
+    /**
+     * 结算
+     */
+    submit() {
+      let list = [];
+      let cartItems = this.$refs['table'].getSelectionRows();
+      for(let i = 0; i < cartItems.length; i++) {
+        list.push(cartItems[i].id);
+      }
+      //将购物车项的 id 列表传给提交订单页面
+      this.$router.push({ name: 'submit', params: { cartItemIds: list } });
     },
     /**
      * 计算总价格
