@@ -107,8 +107,10 @@ import { addOrder } from '@/api/order';
 
 export default {
   props: [
-    'cartItemIds'   //购物车项 id 列表
+    'cartItemIds',   //购物车项 id 列表
+    'modelValue'
   ],
+  emits: ['update:modelValue'],
   data() {
     return {
       address: null,
@@ -188,6 +190,7 @@ export default {
         ElMessage.error("没有商品");
       });
     }
+    this.stepIndex = 0;
   },
   computed: {
     realPrice() {
@@ -204,6 +207,14 @@ export default {
         }
       }
       return null;
+    },
+    stepIndex: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+      }
     }
   }
 }

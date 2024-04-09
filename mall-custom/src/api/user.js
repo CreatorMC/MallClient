@@ -22,6 +22,18 @@ export function getUserInfo(id) {
 }
 
 /**
+ * 获取当前用户余额
+ * @returns 
+ */
+export function getUserBalance() {
+  return service.get("/user/balance", {
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
  * 用户注册
  * @param {*} data 
  * @returns 

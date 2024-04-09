@@ -14,7 +14,9 @@
       </div>
     </div>
     <div class="container">
-      <router-view></router-view>
+      <router-view v-slot="{ Component }">
+        <component :is="Component" v-model="stepIndex" />
+      </router-view>
     </div>
   </div>
 </template>
