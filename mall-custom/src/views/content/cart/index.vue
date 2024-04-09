@@ -186,13 +186,18 @@ export default {
     getCart() {
       getCart().then((response) => {
         if(response != null) {
-          this.products = response.data;
+          this.products = response.data.products;
           //将 spec 转换为对象
           for(let i = 0; i < this.products.length; i++) {
             let t = this.products[i].spec;
             if(typeof t == 'string') {
               this.products[i].spec = JSON.parse(t);
             }
+          }
+          if(response.data.ifUpdate) {
+            ElMessageBox.alert("检测到购物车中有商品被下架或更新，已自动删除被下架或更新的商品。", "提示", {
+              type: "info"
+            });
           }
         }
       })
