@@ -48,6 +48,12 @@ const router = createRouter({
               name: "submit",
               component: () => import('../views/content/order/submit.vue'),
               props: true
+            },
+            {
+              path: "pay/:id",
+              name: "pay",
+              component: () => import('../views/content/order/pay.vue'),
+              props: true
             }
           ]
         }

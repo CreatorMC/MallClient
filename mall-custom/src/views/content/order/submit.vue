@@ -89,7 +89,11 @@
       </div>
     </div>
     <div class="submit">
-      <el-button type="danger" size="large" :disabled="products == null || products.length <= 0">提交订单</el-button>
+      <el-button type="danger" size="large" 
+        :disabled="products == null || products.length <= 0 || address == null || this.cartItemIds == null || this.cartItemIds.length <= 0" 
+        @click="submitOrder">
+        提交订单
+      </el-button>
     </div>
   </div>
 </template>
@@ -98,7 +102,8 @@
 import { parseBalance } from '@/utils/util';
 import { listAddresses } from '@/api/address';
 import { getSelectedCart } from '@/api/cart';
-import { ElMessageBox, ElMessage } from 'element-plus';
+import { ElMessageBox, ElMessage, ElLoading } from 'element-plus';
+import { addOrder } from '@/api/order';
 
 export default {
   props: [
@@ -145,6 +150,30 @@ export default {
           }
         }
       });
+    },
+    submitOrder() {
+      const loading = ElLoading.service();
+      addOrder({
+        ids: this.cartItemIds,
+        addressId: this.address
+      }).then((response) => {
+        if(response != null) {
+          if(response.data.ifUpdate) {
+            ElMessageBox.alert("检测到订单中有商品被下架或更新，已自动删除被下架或更新的商品。点击确定刷新页面。", "提示", {
+              type: "info",
+              callback: (action) => {
+                //刷新当前页面
+                this.$router.go(0);
+              }
+            });
+            return;
+          }
+          //提交到下一个页面
+          this.$router.push({ name: 'pay', params: { id: response.data.id } });
+        }
+      }).finally(() => {
+        loading.close();
+      })
     },
     parseBalance(balance) {
       return parseBalance(balance);
