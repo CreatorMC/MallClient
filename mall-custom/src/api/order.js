@@ -27,6 +27,19 @@ export function getOrderPrice(id) {
 }
 
 /**
+ * 获取订单剩余支付时间
+ * @param {*} id 订单 id
+ * @returns 
+ */
+export function getRemainder(id) {
+  return service.get("/order/getRemainder/" + id, {
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
  * 支付订单
  * @param {*} dto 
  * @returns 

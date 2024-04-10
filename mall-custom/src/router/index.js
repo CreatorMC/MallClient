@@ -54,6 +54,11 @@ const router = createRouter({
               name: "pay",
               component: () => import('../views/content/order/pay.vue'),
               props: true
+            },
+            {
+              path: "success",
+              name: "success",
+              component: () => import('../views/content/order/success.vue')
             }
           ]
         }

@@ -29,7 +29,7 @@
         <span class="realpay--price">{{ parseBalance(payPrice) == "无" ? 0.00 : parseBalance(payPrice) }}</span>
       </div>
       <div style="margin-top: 10px; text-align: right;">
-        <el-button type="danger" size="large" @click="payOrder">
+        <el-button :disabled="!(payPrice != null && payPrice > 0)" type="danger" size="large" @click="payOrder">
           确认支付
         </el-button>
       </div>
@@ -48,7 +48,8 @@
 <script>
 import { parseBalance } from '@/utils/util';
 import { getUserBalance } from '@/api/user';
-import { getOrderPrice, payOrder } from '@/api/order';
+import { getOrderPrice, payOrder, getRemainder } from '@/api/order';
+import { ElLoading } from 'element-plus';
 
 export default {
   props: [
@@ -81,13 +82,15 @@ export default {
       //支付金额
       payPrice: null,
       //剩余支付时间（秒）
-      remainder: 600,
+      remainder: 1800,
       //是否显示支付
       isShowPay: true,
       dto: {
         id: this.id,
         paymentType: 3
-      }
+      },
+      //定时器
+      timer: null
     }
   },
   methods: {
@@ -106,19 +109,30 @@ export default {
       });
     },
     payOrder() {
+      const loading = ElLoading.service();
       //是否支付成功
       let isSuccess = false;
       this.dto.id = this.id;
       payOrder(this.dto).then((response) => {
         if(response != null) {
           isSuccess = true;
-          console.log("支付成功");
+          this.$router.push({
+            name: 'success'
+          });
         }
       }).finally(() => {
         if(!isSuccess) {
           //支付失败
         }
+        loading.close();
       });
+    },
+    getRemainder() {
+      getRemainder(this.id).then((response) => {
+        if(response != null) {
+          this.remainder = response.data;
+        }
+      })
     },
     parseBalance(balance) {
       return parseBalance(balance);
@@ -132,20 +146,25 @@ export default {
     this.stepIndex = 1;
     this.getUserBalance();
     this.getOrderPrice();
+    this.getRemainder();
     //循环定时器
-    const timer = setInterval(() => {
+    this.timer = setInterval(() => {
       this.remainder--;
       if(this.remainder <= 0) {
         //显示订单失效提示
         this.isShowPay = false;
-        clearInterval(timer);
+        clearInterval(this.timer);
       }
     }, 1000)
   },
+  unmounted() {
+    clearInterval(this.timer);
+  },
   computed: {
     remainderFormat() {
-      let m = Math.floor(this.remainder / 60);
-      let s = this.remainder % 60;
+      let time = this.remainder;
+      let m = Math.floor(time / 60);
+      let s = time % 60;
       return "" + (m.toString().length < 2 ? ("0" + m) : m) + ":" + (s.toString().length < 2 ? "0" + s : s);
     },
     stepIndex: {
