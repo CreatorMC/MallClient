@@ -13,7 +13,7 @@
           </el-avatar>
           <div style="font-weight: bold; max-width: 200px;">{{ nickName }}</div>
         </div>
-        <el-menu-item index="">个人中心</el-menu-item>
+        <el-menu-item index="/index/user">个人中心</el-menu-item>
         <el-menu-item index="" @click="logout">退出登录</el-menu-item>
       </el-sub-menu>
       <div class="flex-grow" />

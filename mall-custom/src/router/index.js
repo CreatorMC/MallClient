@@ -61,6 +61,24 @@ const router = createRouter({
               component: () => import('../views/content/order/success.vue')
             }
           ]
+        },
+        {
+          path: "user",
+          name: "user",
+          redirect: "/index/user/user-home",
+          component: () => import('../views/content/user/index.vue'),
+          children: [
+            {
+              path: "user-home",
+              name: "user-home",
+              component: () => import('../views/content/user/home.vue')
+            },
+            {
+              path: "information",
+              name: "information",
+              component: () => import('../views/content/user/information.vue')
+            }
+          ]
         }
       ]
     },
