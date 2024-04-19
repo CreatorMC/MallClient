@@ -87,6 +87,7 @@ import { addCart } from '@/api/cart';
 import { ElMessage } from 'element-plus';
 import { listAddresses } from '@/api/address';
 import { addStar, getIsStar, deleteStar } from '@/api/star';
+import { addHistory } from '@/api/history';
 
 export default {
   data() {
@@ -214,6 +215,16 @@ export default {
         }
       })
     },
+    /**
+     * 添加历史记录
+     */
+    addHistory() {
+      addHistory(this.id).then((response) => {
+        if(response != null) {
+          //添加历史记录成功
+        }
+      })
+    },
     parseBalance(balance) {
       return parseBalance(balance);
     }
@@ -224,6 +235,7 @@ export default {
     this.getCustomProperty();
     this.listAddresses();
     this.getIsStar();
+    this.addHistory(this.id);
   },
   components: { TopSearchComponent, Price, IconSVGComponent }
 }
@@ -342,9 +354,9 @@ export default {
         .icon {
           font-size: 14px;
           margin-right: 5px;
-          .is-star {
-            color: #ff5000;
-          }
+        }
+        .is-star {
+          color: #ff5000;
         }
       }
     }
