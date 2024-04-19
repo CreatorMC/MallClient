@@ -59,8 +59,8 @@
               <el-button size="large" @click="addCart">加入购物车</el-button>
             </el-button-group>
             <span style="width: 10px; display: inline-block;"></span>
-            <el-button text round>
-              <IconSVGComponent class="icon" name="icon-biaoxing" />
+            <el-button v-if="isStar != null" text round @click="addStar">
+              <IconSVGComponent :class="'icon ' + (isStar ? 'is-star' : '')" :name="isStar ? 'icon-biaoxingfill' : 'icon-biaoxing'" />
               <span>收藏</span>
             </el-button>
           </div>
@@ -86,6 +86,8 @@ import { parseBalance } from '@/utils/util';
 import { addCart } from '@/api/cart';
 import { ElMessage } from 'element-plus';
 import { listAddresses } from '@/api/address';
+import { addStar, getIsStar, deleteStar } from '@/api/star';
+
 export default {
   data() {
     return {
@@ -105,7 +107,9 @@ export default {
       form: {
         specFix: {},
         num: 1
-      }
+      },
+      //标记商品是否已收藏
+      isStar: null
     };
   },
   methods: {
@@ -181,6 +185,35 @@ export default {
         }
       })
     },
+    /**
+     * 收藏商品
+     */
+    addStar() {
+      if(!this.isStar) {
+        //添加收藏
+        addStar(this.id).then((response) => {
+          if(response != null) {
+            ElMessage.success("收藏成功");
+            this.isStar = true;
+          }
+        })
+      } else {
+        //取消收藏
+        deleteStar([this.id]).then((response) => {
+          if(response != null) {
+            ElMessage.success("取消收藏成功");
+            this.isStar = false;
+          }
+        })
+      }
+    },
+    getIsStar() {
+      getIsStar(this.id).then((response) => {
+        if(response != null) {
+          this.isStar = response.data;
+        }
+      })
+    },
     parseBalance(balance) {
       return parseBalance(balance);
     }
@@ -190,6 +223,7 @@ export default {
     this.getProduct();
     this.getCustomProperty();
     this.listAddresses();
+    this.getIsStar();
   },
   components: { TopSearchComponent, Price, IconSVGComponent }
 }
@@ -308,6 +342,9 @@ export default {
         .icon {
           font-size: 14px;
           margin-right: 5px;
+          .is-star {
+            color: #ff5000;
+          }
         }
       }
     }
