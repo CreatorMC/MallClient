@@ -20,7 +20,7 @@
       <el-sub-menu index="" popper-class="custom-menu-popper">
         <template #title>我的淘金</template>
         <el-menu-item index="">已买到的宝贝</el-menu-item>
-        <el-menu-item index="">我的足迹</el-menu-item>
+        <el-menu-item index="/index/history">我的足迹</el-menu-item>
       </el-sub-menu>
       <el-menu-item index="/index/cart"><IconSVGComponent class="icon" name="icon-gouwuchefill" />购物车</el-menu-item>
       <el-menu-item index="/index/star"><IconSVGComponent class="icon" name="icon-biaoxingfill" />收藏夹</el-menu-item>

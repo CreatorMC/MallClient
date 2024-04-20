@@ -40,7 +40,7 @@ export function getIsStar(id) {
 
 /**
  * 取消收藏
- * @param {*} ids 商品 id 列表
+ * @param {*} ids 收藏 id 列表
  * @returns 
  */
 export function deleteStar(ids) {
