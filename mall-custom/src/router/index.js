@@ -79,6 +79,11 @@ const router = createRouter({
               component: () => import('../views/content/user/information.vue')
             }
           ]
+        },
+        {
+          path: "star",
+          name: "star",
+          component: () => import('../views/content/star/index.vue')
         }
       ]
     },

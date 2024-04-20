@@ -1,6 +1,18 @@
 import service from "../utils/request";
 
 /**
+ * 查询用户收藏列表
+ * @returns 
+ */
+export function listStar() {
+  return service.get("/star/listStar", {
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
  * 添加收藏
  * @param {*} id 商品 id
  * @returns 

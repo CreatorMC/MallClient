@@ -23,7 +23,7 @@
         <el-menu-item index="">我的足迹</el-menu-item>
       </el-sub-menu>
       <el-menu-item index="/index/cart"><IconSVGComponent class="icon" name="icon-gouwuchefill" />购物车</el-menu-item>
-      <el-menu-item index=""><IconSVGComponent class="icon" name="icon-biaoxingfill" />收藏夹</el-menu-item>
+      <el-menu-item index="/index/star"><IconSVGComponent class="icon" name="icon-biaoxingfill" />收藏夹</el-menu-item>
       <el-menu-item index="">商品分类</el-menu-item>
     </el-menu>
   </div>
