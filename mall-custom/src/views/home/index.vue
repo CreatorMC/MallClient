@@ -136,7 +136,7 @@ import IconSVGComponent from '@/components/utils/IconSVGComponent.vue';
 import ProductItem from '@/components/content/ProductItem.vue';
 import { userStore } from '@/store/user';
 import { getCategoryList } from '@/api/category';
-import { getProductList } from '@/api/product';
+import { getProductList, getRecommendedProductList } from '@/api/product';
 import { parseBalance } from '@/utils/util';
 export default {
   data() {
@@ -153,7 +153,11 @@ export default {
       categoryList: [],
       products: [],
       pageNum: 1,
-      pageSize: 12
+      pageSize: 12,
+      //防止重复发送获取同一页商品的请求
+      pageLoading: false,
+      //如果为 true，即锁住推荐商品的方法，只使用普通的获取分页商品的方法
+      lock: false
     };
   },
   methods: {
@@ -168,12 +172,30 @@ export default {
       })
     },
     getProductList() {
-      getProductList(this.pageNum, this.pageSize, { name: null, categoryId: null }).then((response) => {
-        if(response != null) {
-          this.products = this.products.concat(response.data.rows);
-          this.pageNum++;
-        }
-      })
+      if(((this.user.id == null || this.user.id == "") && !this.pageLoading) || this.lock) {
+        this.pageLoading = true;
+        getProductList(this.pageNum, this.pageSize, { name: null, categoryId: null }).then((response) => {
+          if(response != null) {
+            this.products = this.products.concat(response.data.rows);
+            this.pageNum++;
+          }
+        }).finally(() => {
+          this.pageLoading = false;
+        })
+      } else if (!this.pageLoading) {
+        this.pageLoading = true;
+        getRecommendedProductList(this.pageNum, this.pageSize).then((response) => {
+          if(response != null) {
+            if(response.data.rows.length <= 0) {
+              this.lock = true;
+            }
+            this.products = this.products.concat(response.data.rows);
+            this.pageNum++;
+          }
+        }).finally(() => {
+          this.pageLoading = false;
+        })
+      }
     },
     parseBalance(balance) {
       return parseBalance(balance);
@@ -183,6 +205,7 @@ export default {
     const store = userStore();
     this.user = store.user;
     this.getCategoryList();
+    this.getProductList();
   },
   computed: {
     //是否已登录
@@ -269,6 +292,7 @@ export default {
 }
 
 .body {
+  min-height: 600px;
   border-radius: 15px;
   background-color: var(--el-input-bg-color,var(--el-fill-color-blank));
 }

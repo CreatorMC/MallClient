@@ -19,6 +19,24 @@ export function getProductList(pageNum, pageSize, dto) {
 }
 
 /**
+ * 查询商品推荐列表
+ * @param {*} pageNum 
+ * @param {*} pageSize 
+ * @returns 
+ */
+export function getRecommendedProductList(pageNum, pageSize) {
+  return service.get("/product/listRecommendedProductList", {
+    params: {
+      pageNum,
+      pageSize
+    },
+    headers: {
+      "token": localStorage.getItem("token")
+    }
+  });
+}
+
+/**
  * 查询单个商品
  * @param {*} id 商品 id
  * @returns 
