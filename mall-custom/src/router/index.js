@@ -89,6 +89,12 @@ const router = createRouter({
           path: "history",
           name: "history",
           component: () => import('../views/content/history/index.vue')
+        },
+        {
+          path: "search/:homeText",
+          name: "search",
+          component: () => import('../views/content/search/index.vue'),
+          props: true
         }
       ]
     },

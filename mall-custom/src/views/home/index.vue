@@ -16,10 +16,11 @@
               v-model="searchText"
               placeholder="搜索商品"
               class="input-search"
+              @keyup.enter="handlerSearch"
             >
             </el-input>
             <div class="search-button">
-              <el-button type="success" round>搜索</el-button>
+              <el-button type="success" round @click="handlerSearch">搜索</el-button>
             </div>
           </div>
         </div>
@@ -138,6 +139,8 @@ import { userStore } from '@/store/user';
 import { getCategoryList } from '@/api/category';
 import { getProductList, getRecommendedProductList } from '@/api/product';
 import { parseBalance } from '@/utils/util';
+import { ElMessage } from 'element-plus';
+
 export default {
   data() {
     return {
@@ -161,6 +164,17 @@ export default {
     };
   },
   methods: {
+    /**
+     * 搜索
+     */
+    handlerSearch() {
+      if(this.searchText == null || this.searchText == "") {
+        ElMessage.error("请输入搜索内容");
+        return;
+      }
+      //跳转到搜索页
+      this.$router.push({ name: 'search', params: { homeText: this.searchText } });
+    },
     /**
      * 获取分类
      */
